@@ -11,12 +11,36 @@
 .node {
   font: 10px sans-serif;
 }
+  #draggable { width: 150px; height: 150px; padding: 0.5em; }
 
 </style>
-<body>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script src="//d3js.org/d3.v3.min.js"></script>
-<script>
+<body>
 
+	  <div id="draggable" class="ui-widget-content">
+  <p>Draggable node</p>
+	  <p id = "posX">x</p>
+	  <p id = "posY">y</p>
+</div>
+
+<script>
+  $(function() {
+    $( "#draggable" ).draggable({
+        drag: function(){
+            var offset = $(this).offset();
+            var xPos = offset.left;
+            var yPos = offset.top;
+            $('#posX').text('x: ' + xPos);
+            $('#posY').text('y: ' + yPos);
+        }
+    });
+
+	$("#draggable").css({'top': 200, 'left' : 200});
+
+  });
 var jsonData = [
 	{"name": "ArrayInterpolator", "x": 50, "y": 50},
       {"name": "ColorInterpolator", "x": 50, "y": 70},
