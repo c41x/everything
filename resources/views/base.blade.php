@@ -3,7 +3,7 @@
 <title>Everything</title>
 <style>
 
- #draggable { width: 150px; height: 150px; padding: 0.5em; }
+ #n1 { width: 150px; height: 150px; padding: 0.5em; }
  body { margin: 0; }
 
 </style>
@@ -13,37 +13,39 @@
 <body>
   <script>
    $(function() {
-       // automatically generated from DB
-       var spawnDraggable = function() {
-	   $(document.body).append('<div id="draggable" class="ui-widget-content"><p>Draggable node</p><p id = "posX">x</p><p id = "posY">y</p> </div>');
-       };
-
+       // user specified
        var serializeAddOffset = function(obj) {
 	   return [obj.offset().left, obj.offset().top];
        };
 
-       $("#draggable").draggable({
-           drag: function() {
-               var offset = $(this).offset();
-               var xPos = offset.left;
-               var yPos = offset.top;
-               $('#posX').text('x: ' + xPos);
-               $('#posY').text('y: ' + yPos);
-           },
-	   stop: function() {
-	       // update database
-	       //alert(serializeAddOffset($(this)));
-	   }
-       });
+       var setupDraggable = function(id) {
+	   $(id).draggable({
+               drag: function() {
+		   var offset = $(this).offset();
+		   var xPos = offset.left;
+		   var yPos = offset.top;
+		   $('#posX').text('x: ' + xPos);
+		   $('#posY').text('y: ' + yPos);
+               },
+	       stop: function() {
+		   // update database
+		   //alert(serializeAddOffset($(this)));
+	       }
+	   });
+       };
 
-       spawnDraggable(0);
+       // automatically generated from DB
+       var spawnDraggable = function() {
+	   // change to AJAX request returnig id
+	   $(document.body).append('<div id="n1" class="ui-widget-content"><p>Draggable node</p><p id = "posX">x</p><p id = "posY">y</p> </div>');
+	   setupDraggable("#" + "n1");
+       };
 
-       $("#draggable").offset({top: 200, left : 200});
-       /*
-	  spawn object(s)
-	  serialize
-       */
+       // temporary (result of "create draggable" button)
+       spawnDraggable();
 
+       // generated automatically from nodes table
+       $("#n1").offset({top: 200, left : 200});
    });
   </script>
 </body>
