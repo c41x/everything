@@ -16,20 +16,46 @@
        /*
 	  user specified content all stored in DB
 	  as JS part. all functions must follow naming
-	  convention, all functions must work with class or id
+	  convention
 	*/
        var serializeDraggable = function(id) {
 	   // 1) gets state as JSON
 	   // 2) sends update request to server, print error if disconnected
 	   // or 2) push data to update queue?
 	   var obj = $(id);
-	   return [obj.offset().left, obj.offset().top];
+	   var dataToSend = JSON.stringify({"top" : obj.offset().top,
+					    "left" : obj.offset().left});
+	   $.ajax({
+	       type: "POST",
+	       url: "set-node.php?id=" + id,
+	       data: dataToSend,
+	       contentType: "application/json",
+	       success: function(data) {
+		   alert("data send to server: " + dataToSend + " response: " + data);
+	       },
+	       error: function(a, b, c) {
+		   alert("sending error: " + dataToSend);
+		   alert(b);
+		   alert(c);
+	       }
+	   });
        };
 
        var deserializeDraggable = function(id) {
 	   // 1) sends request for state
 	   // 2) apply state
-	   $(id).offset({top : 200, left : 200});
+	   $.ajax({
+	       dataType: "json",
+	       url: "get-node.php?id=" + id,
+	       success: function(data) {
+		   $("#" + id).offset(data);
+		   alert("loaded from server: " + JSON.stringify(data));
+	       },
+	       error: function(a, b, c) {
+		   alert(b);
+		   alert(c);
+	       }
+	   });
        };
 
        var setupDraggable = function(id) {
@@ -44,7 +70,7 @@
                },
                stop: function() {
 		   // just tests
-		   //alert(serializeDraggable(id));
+		   serializeDraggable(id);
 		   //removeDraggable(id);
                }
 	   });
@@ -58,8 +84,20 @@
 	   // 2) sends AJAX request with thing id e.g.: create.php?thing=draggable
 	   // 3) server returns JSON with html: "html code" and id: "#id"
 	   // 4) code is calling "setup" + <thing_name> function for JS setup part
-	   $(document.body).append('<div id="n1" class="ui-widget-content draggable"><p>Draggable node</p><p id = "posX">x</p><p id = "posY">y</p> </div>');
-	   setupDraggable("#" + "n1");
+	   // TODO: generic
+	   $.ajax({
+	       dataType: "json",
+	       url: "create-node.php?type=draggable",
+	       success: function(data) {
+		   alert("spawning: " + data.html);
+		   $(document.body).append(data.html);
+		   setupDraggable("#" + data.id);
+	       },
+	       error: function(a, b, c) {
+		   alert(b);
+		   alert(c);
+	       }
+	   });
        };
 
        var removeDraggable = function(id) {
@@ -68,14 +106,16 @@
 	   $(id).remove();
        };
 
-       // temporary (result of "create draggable" button)
-       spawnDraggable();
-
        // content loading
        // 1) initialize progress bar code, setup & run progressbar
        // 2) iterate through all nodes and call "deserialize" + <thing_name>
        // 3) close progress bar or display error message box
-       deserializeDraggable("#n1");
+       //deserializeDraggable("n1");
+
+       // spawning new node
+       $(document.body).keypress(function(){
+	   spawnDraggable();
+       });
    });
   </script>
   <!-- server inserts menu & controls -->
