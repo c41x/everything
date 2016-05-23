@@ -110,7 +110,6 @@
        // 1) initialize progress bar code, setup & run progressbar
        // 2) iterate through all nodes and call "deserialize" + <thing_name>
        // 3) close progress bar or display error message box
-       //deserializeDraggable("n1");
 
        // spawning new node
        $(document.body).keypress(function(){
