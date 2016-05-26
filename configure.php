@@ -8,6 +8,7 @@ function tableExists($db, $tableName) {
     return $db->query('SELECT 1 FROM `'.$tableName.'` LIMIT 1') !== FALSE;
 }
 
+$charsetPostfix = ' CHARACTER SET utf8 COLLATE utf8_bin ';
 $db = mysqli_connect("localhost", "root", "pass", "everything");
 
 if ($db->connect_errno) {
@@ -24,11 +25,11 @@ else {
 	addLine("creating things table...");
 	if ($db->query("CREATE TABLE things (".
 		       "id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,".
-		       "name_id VARCHAR(255) NOT NULL,".
-		       "pretty_name VARCHAR(255) NOT NULL,".
-		       "html TEXT,".
-		       "js TEXT,".
-		       "css TEXT".
+		       "name_id VARCHAR(255)".$charsetPostfix."NOT NULL,".
+		       "pretty_name VARCHAR(255)".$charsetPostfix."NOT NULL,".
+		       "html TEXT".$charsetPostfix.",".
+		       "js TEXT".$charsetPostfix.",".
+		       "css TEXT".$charsetPostfix.
 		       ")") == FALSE) {
 	    addLine("error creating things table");
 	}
