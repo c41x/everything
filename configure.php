@@ -17,6 +17,7 @@ if ($db->connect_errno) {
 else {
     addLine("connection to MySQL database established.");
 
+    // things
     if (tableExists($db, 'things')) {
 	addLine("table things - ok");
 	// TODO: verify?
@@ -37,6 +38,26 @@ else {
 	    addLine("table things created");
 	}
     }
+
+    // nodes
+    if (tableExists($db, 'nodes')) {
+	addLine("table nodes - ok");
+    }
+    else {
+	addLine("creating nodes table...");
+	if ($db->query("CREATE TABLE nodes (".
+		       "id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,".
+		       "id_things INT UNSIGNED NOT NULL, ".
+		       "state TEXT".$charsetPostfix
+		       ")") == FALSE) {
+	    addLine("error creating things nodes");
+	}
+	else {
+	    addLine("table nodes created");
+	}
+    }
+
+    // pages
 }
 
 ?>
