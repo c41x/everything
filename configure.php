@@ -20,7 +20,6 @@ else {
     // things
     if (tableExists($db, 'things')) {
 	addLine("table things - ok");
-	// TODO: verify?
     }
     else {
 	addLine("creating things table...");
@@ -58,6 +57,39 @@ else {
     }
 
     // pages
+    if (tableExists($db, 'pages')) {
+	addLine("table pages - ok");
+    }
+    else {
+	addLine("creating pages table...");
+	if ($db->query("CREATE TABLE pages (".
+		       "id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, ".
+		       "title VARCHAR(255)".$charsetPostfix.
+		       ")") == FALSE) {
+	    addLine("error creating pages table");
+	}
+	else {
+	    addLine("table pages created");
+	}
+    }
+
+    // page_nodes
+    if (tableExists($db, 'page_nodes')) {
+	addLine("table page_nodes - ok");
+    }
+    else {
+	addLine("creating page_nodes table...");
+	if ($db->query("CREATE TABLE page_nodes (".
+		       "id_page INT UNSIGNED NOT NULL, ".
+		       "id_node INT UNSIGNED NOT NULL, ".
+		       ")") == FALSE) {
+	    addLine("error creating page_nodes table");
+	}
+	else {
+	    addLine("table page_nodes created");
+	}
+    }
 }
 
+// TODO: verify tables structure
 ?>
