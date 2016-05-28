@@ -11,7 +11,7 @@ function tableExists($db, $tableName) {
 $charsetPostfix = ' CHARACTER SET utf8 COLLATE utf8_bin ';
 $db = mysqli_connect("localhost", "root", "pass", "everything");
 
-if ($db->connect_errno) {
+if ($db->connect_errno !== 0) {
     addLine("could not connect to server.");
 }
 else {
@@ -47,7 +47,7 @@ else {
 	if ($db->query("CREATE TABLE nodes (".
 		       "id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,".
 		       "id_things INT UNSIGNED NOT NULL, ".
-		       "state TEXT".$charsetPostfix
+		       "state TEXT".$charsetPostfix.
 		       ")") == FALSE) {
 	    addLine("error creating things nodes");
 	}
@@ -81,7 +81,7 @@ else {
 	addLine("creating page_nodes table...");
 	if ($db->query("CREATE TABLE page_nodes (".
 		       "id_page INT UNSIGNED NOT NULL, ".
-		       "id_node INT UNSIGNED NOT NULL, ".
+		       "id_node INT UNSIGNED NOT NULL".
 		       ")") == FALSE) {
 	    addLine("error creating page_nodes table");
 	}
@@ -89,6 +89,8 @@ else {
 	    addLine("table page_nodes created");
 	}
     }
+
+    addLine("done");
 }
 
 // TODO: verify tables structure
