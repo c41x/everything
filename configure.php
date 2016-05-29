@@ -8,15 +8,7 @@ function tableExists($db, $tableName) {
     return $db->query('SELECT 1 FROM `'.$tableName.'` LIMIT 1') !== FALSE;
 }
 
-$charsetPostfix = ' CHARACTER SET utf8 COLLATE utf8_bin ';
-$db = mysqli_connect("localhost", "root", "pass", "everything");
-
-if ($db->connect_errno !== 0) {
-    addLine("could not connect to server.");
-}
-else {
-    addLine("connection to MySQL database established.");
-
+function initializeDatabse($db) {
     // things
     if (tableExists($db, 'things')) {
 	addLine("table things - ok");
@@ -89,7 +81,39 @@ else {
 	    addLine("table page_nodes created");
 	}
     }
+}
 
+$charsetPostfix = ' CHARACTER SET utf8 COLLATE utf8_bin ';
+$db = mysqli_connect("localhost", "root", "pass", "everything");
+
+if ($db->connect_errno !== 0) {
+    addLine("could not connect to server");
+}
+else {
+    addLine("connection to MySQL database established.");
+    if ($_GET) {
+	if (isset($_GET["install"]) && $_POST && isset($_POST["name_id"]) && isset($_POST["pretty_name"]) &&
+	    isset($_POST["html"]) && isset($_POST["js"]) && isset($_POST["css"])) {
+	    if ($db->query("INSERT INTO things (name_id, pretty_name, html, js, css) VALUES (".
+			   "'$_POST['name_id']', ".
+			   "'$_POST['pretty_name']', ".
+			   "'$_POST['html']', ".
+			   "'$_POST['js']', ".
+			   "'$_POST['css']'".
+			   ")") == FALSE) {
+		addLine("could not install thing");
+	    }
+	    else {
+		addLine("thing \"".$_POST["pretty_name"]."\" installed");
+	    }
+	}
+	else {
+	    addLine("could not install thing: POST data incomplete");
+	}
+    }
+    else {
+	initializeDatabse($db);
+    }
     addLine("done");
 }
 
