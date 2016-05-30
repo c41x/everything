@@ -95,11 +95,11 @@ else {
 	if (isset($_GET["install"]) && $_POST && isset($_POST["name_id"]) && isset($_POST["pretty_name"]) &&
 	    isset($_POST["html"]) && isset($_POST["js"]) && isset($_POST["css"])) {
 	    if ($db->query("INSERT INTO things (name_id, pretty_name, html, js, css) VALUES (".
-			   "'$_POST['name_id']', ".
-			   "'$_POST['pretty_name']', ".
-			   "'$_POST['html']', ".
-			   "'$_POST['js']', ".
-			   "'$_POST['css']'".
+			   "'".mysqli_escape_string($db, $_POST['name_id'])."', ".
+			   "'".mysqli_escape_string($db, $_POST['pretty_name'])."', ".
+			   "'".mysqli_escape_string($db, $_POST['html'])."', ".
+			   "'".mysqli_escape_string($db, $_POST['js'])."', ".
+			   "'".mysqli_escape_string($db, $_POST['css'])."'".
 			   ")") == FALSE) {
 		addLine("could not install thing");
 	    }
@@ -118,4 +118,5 @@ else {
 }
 
 // TODO: verify tables structure
+// TODO: " -> '
 ?>
