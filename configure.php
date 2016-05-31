@@ -83,8 +83,9 @@ function initializeDatabse($db) {
     }
 }
 
-$charsetPostfix = ' CHARACTER SET utf8 COLLATE utf8_bin ';
-$db = mysqli_connect('localhost', 'root', 'pass', 'everything');
+require 'config.php';
+
+$db = mysqli_connect($host, $user, $password, $database);
 
 if ($db->connect_errno !== 0) {
     addLine('could not connect to server');
