@@ -1,6 +1,5 @@
 <?php
-require 'config.php';
-$db = mysqli_connect($host, $user, $password, $database);
+require 'engine.php';
 $thingsResult = $db->query('SELECT * FROM things');
 $things = array();
 $i = 0;
@@ -43,33 +42,48 @@ if ($thingsResult->num_rows > 0) {
 	   });
        }
 
+       var genericRemove = function(id) {
+	   $.ajax({
+	       dataType: "json",
+	       url: "delete-node.php?id=" + id,
+	       success: function(data) {
+		   alert("deleted node " + id + " response: " + data.result);
+		   $("#" + id).remove();
+	       },
+	       error: function(a, b, c) {
+		   alert(b);
+		   alert(c);
+	       }
+	   });
+       };
+
        <?php
        foreach ($things as &$thing) {
 	   echo $thing['js'];
 	   echo 'var spawn'.$thing['name_id'].' = function() { genericSpawn("'.
-		$thing['name_id'].'", setup'.$thing['name_id'].'); }';
-	   // TODO: remove from server
-	   //echo 'remove'.$thing['name_id'].' = function(id) { $id.remove(); }';
+		$thing['name_id'].'", setup'.$thing['name_id'].'); };';
+	   echo 'remove'.$thing['name_id'].' = function(id) { genericRemove(id); };';
        }
        ?>
-
-       var removeDraggable = function(id) {
-	   // 1) remove from DOM
-	   // 2) send AJAX request to remove, print error if disconnected
-	   $(id).remove();
-       };
 
        // content loading
        // 1) initialize progress bar code, setup & run progressbar
        // 2) iterate through all nodes and call "deserialize" + <thing_name>
        // 3) close progress bar or display error message box
 
-       // spawning new node
+       // spawning new node (test code)
+       var created = false;
        $(document.body).keypress(function(){
-	   spawnDraggable();
+	   if (!created)
+	       spawnDraggable();
+	   else removeDraggable("n1");
+	   created = true;
        });
    });
   </script>
   <!-- server inserts menu & controls -->
   <!-- server inserts html for all nodes here -->
 </body>
+<?php
+$db->close();
+?>

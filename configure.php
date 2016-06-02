@@ -1,4 +1,5 @@
 <?php
+require 'engine.php';
 
 function addLine($s) {
     echo $s.'<br />';
@@ -83,10 +84,6 @@ function initializeDatabse($db) {
     }
 }
 
-require 'config.php';
-
-$db = mysqli_connect($host, $user, $password, $database);
-
 if ($db->connect_errno !== 0) {
     addLine('could not connect to server');
 }
@@ -117,6 +114,8 @@ else {
     }
     addLine('done');
 }
+
+$db->close();
 
 // TODO: verify tables structure
 ?>
