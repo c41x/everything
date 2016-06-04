@@ -14,6 +14,7 @@ if ($thingsResult->num_rows > 0) {
 <title>Everything</title>
 <style>
  body { margin: 0; }
+ .ui-button-text { font-size: .7em; }
  <?php
  foreach ($things as &$thing) {
      echo $thing['css'];
@@ -58,11 +59,13 @@ if ($thingsResult->num_rows > 0) {
        };
 
        <?php
+       // generate all js code
        foreach ($things as &$thing) {
 	   echo $thing['js'];
 	   echo 'var spawn'.$thing['name_id'].' = function() { genericSpawn("'.
 		$thing['name_id'].'", setup'.$thing['name_id'].'); };';
 	   echo 'remove'.$thing['name_id'].' = function(id) { genericRemove(id); };';
+	   echo '$("#btnCreate'.$thing['name_id'].'").button().click(spawn'.$thing['name_id'].');';
        }
        ?>
 
@@ -81,8 +84,13 @@ if ($thingsResult->num_rows > 0) {
        });
    });
   </script>
-  <!-- server inserts menu & controls -->
-  <!-- server inserts html for all nodes here -->
+  <div id="toolbar" class="ui-widget-header ui-corner-all">
+  <?php
+  foreach ($things as &$thing) {
+      echo '<button id="btnCreate'.$thing['name_id'].'">'.$thing['name_id'].'</button>';
+  }
+  ?>
+  </div>
 </body>
 <?php
 $db->close();
