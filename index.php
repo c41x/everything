@@ -3,7 +3,7 @@ require 'engine.php';
 $thingsResult = $db->query('SELECT * FROM things');
 $things = array();
 $i = 0;
-if ($thingsResult->num_rows > 0) {
+if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
     while ($row = $thingsResult->fetch_assoc()) {
 	$things[$i++] = $row;
     }
@@ -27,14 +27,20 @@ if ($thingsResult->num_rows > 0) {
 <body>
   <script>
    $(function() {
-       var genericSpawn = function(type, setupFunction) {
+       var genericSpawn = function(type, setupFunction, serializeFunction) {
 	   $.ajax({
 	       dataType: "json",
 	       url: "create-node.php?type=" + type,
 	       success: function(data) {
-		   alert("spawning: " + data.html);
-		   $(document.body).append(data.html);
-		   setupFunction("#" + data.id);
+		   if (!data.error) {
+		       alert("spawning: " + data.html);
+		       $(document.body).append(data.html);
+		       setupFunction("#" + data.id);
+		       serializeFunction("#" + data.id);
+		   }
+		   else {
+		       alert("error creating node: " + data.desc);
+		   }
 	       },
 	       error: function(a, b, c) {
 		   alert(b);
@@ -63,7 +69,7 @@ if ($thingsResult->num_rows > 0) {
        foreach ($things as &$thing) {
 	   echo $thing['js'];
 	   echo 'var spawn'.$thing['name_id'].' = function() { genericSpawn("'.
-		$thing['name_id'].'", setup'.$thing['name_id'].'); };';
+		$thing['name_id'].'", setup'.$thing['name_id'].', serialize'.$thing['name_id'].'); };';
 	   echo 'remove'.$thing['name_id'].' = function(id) { genericRemove(id); };';
 	   echo '$("#btnCreate'.$thing['name_id'].'").button().click(spawn'.$thing['name_id'].');';
        }
@@ -74,14 +80,7 @@ if ($thingsResult->num_rows > 0) {
        // 2) iterate through all nodes and call "deserialize" + <thing_name>
        // 3) close progress bar or display error message box
 
-       // spawning new node (test code)
-       var created = false;
-       $(document.body).keypress(function(){
-	   if (!created)
-	       spawnDraggable();
-	   else removeDraggable("n1");
-	   created = true;
-       });
+       //removeDraggable("n1");
    });
   </script>
   <div id="toolbar" class="ui-widget-header ui-corner-all">
