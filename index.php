@@ -12,15 +12,20 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>Everything</title>
+
 <style>
  body { margin: 0; }
  .ui-button-text { font-size: .7em; }
+ .ui-progressbar {
+   position: relative;
+ }
  <?php
  foreach ($things as &$thing) {
      echo $thing['css'];
  }
  ?>
 </style>
+
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -81,6 +86,27 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
        // 3) close progress bar or display error message box
 
        //removeDraggable("n1");
+       var progressbar = $("#loadingbar");
+
+       progressbar.progressbar({
+	   value: 0
+       }).height(10);
+
+       function progress() {
+	   var val = progressbar.progressbar( "value" ) || 0;
+
+	   progressbar.progressbar( "value", val + 2 );
+
+	   if ( val < 99 ) {
+               setTimeout( progress, 80 );
+	   }
+	   else {
+	       progressbar.remove();
+	       // TODO: hide / show
+	   }
+       }
+
+       setTimeout( progress, 2000 );
    });
   </script>
   <div id="toolbar" class="ui-widget-header ui-corner-all">
@@ -90,6 +116,7 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
   }
   ?>
   </div>
+  <div id="loadingbar"></div>
 </body>
 <?php
 $db->close();
