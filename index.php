@@ -80,6 +80,8 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
        }
        ?>
 
+       // TODO: ID passing bug
+
        // content loading
        // 1) initialize progress bar code, setup & run progressbar
        // 2) iterate through all nodes and call "deserialize" + <thing_name>
