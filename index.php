@@ -32,6 +32,10 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
 <body>
   <script>
    $(function() {
+       var toID = function(selector) {
+	   return selector.match(/(\d+)/)[1];
+       }
+
        var genericSpawn = function(type, setupFunction, serializeFunction) {
 	   $.ajax({
 	       dataType: "json",

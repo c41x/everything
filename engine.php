@@ -11,4 +11,8 @@ if ($db->connect_errno !== 0) {
 function getPassed($name) {
     return $_GET && isset($_GET[$name]);
 }
+
+function postPassed($name) {
+    return $_POST && isset($_POST[$name]);
+}
 ?>
