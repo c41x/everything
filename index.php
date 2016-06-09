@@ -2,10 +2,17 @@
 require 'engine.php';
 $thingsResult = $db->query('SELECT * FROM things');
 $things = array();
-$i = 0;
 if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
     while ($row = $thingsResult->fetch_assoc()) {
-	$things[$i++] = $row;
+	$things[$row['id']] = $row;
+    }
+}
+
+$nodesResult = $db->query('SELECT * FROM nodes');
+$nodes = array();
+if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
+    while ($row = $nodesResult->fetch_assoc()) {
+	$nodes[$row['id']] = $row;
     }
 }
 ?>
@@ -93,10 +100,7 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
 
        //removeDraggable("n1");
        var progressbar = $("#loadingbar");
-
-       progressbar.progressbar({
-	   value: 0
-       }).height(10);
+       progressbar.progressbar({ value: 0 }).height(10);
 
        function progress() {
 	   var val = progressbar.progressbar( "value" ) || 0;
@@ -113,6 +117,10 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
        }
 
        setTimeout( progress, 2000 );
+
+       // TODO:
+       setupDraggable('#Draggable18');
+       deserializeDraggable("#Draggable18");
    });
   </script>
   <div id="toolbar" class="ui-widget-header ui-corner-all">
@@ -123,6 +131,12 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
   ?>
   </div>
   <div id="loadingbar"></div>
+  <?php
+  foreach ($nodes as &$node) {
+      $myThing = $things[$node['id_things']];
+      echo str_replace('{id}', $myThing['name_id'].$node['id'], $myThing['html']);
+  }
+  ?>
 </body>
 <?php
 $db->close();
