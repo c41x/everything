@@ -23,8 +23,8 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <style>
  body { margin: 0; }
  .ui-button-text { font-size: .7em; }
- .ui-progressbar {
-   position: relative;
+ .ui-progressbar, toolbar {
+   position: fixed;
  }
  <?php
  foreach ($things as &$thing) {
@@ -91,36 +91,27 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
        }
        ?>
 
-       // TODO: ID passing bug
-
-       // content loading
-       // 1) initialize progress bar code, setup & run progressbar
-       // 2) iterate through all nodes and call "deserialize" + <thing_name>
-       // 3) close progress bar or display error message box
-
-       //removeDraggable("n1");
        var progressbar = $("#loadingbar");
        progressbar.progressbar({ value: 0 }).height(10);
 
-       function progress() {
-	   var val = progressbar.progressbar( "value" ) || 0;
+       var loaded = 0;
+       var onNodeDeserialized = function() {
+	   loaded++;
+	   var total = <?php echo count($nodes); ?>;
+	   if (loaded == total)
+	       progressbar.hide();
+	   else progressbar.progressbar("value", (loaded / total) * 100);
+       };
 
-	   progressbar.progressbar( "value", val + 2 );
-
-	   if ( val < 99 ) {
-               setTimeout( progress, 80 );
-	   }
-	   else {
-	       progressbar.remove();
-	       // TODO: hide / show
-	   }
+       <?php
+       foreach ($nodes as &$node) {
+	   $myThing = $things[$node['id_things']];
+	   echo 'setup'.$myThing['name_id'].'("#'.$myThing['name_id'].$node['id'].'");';
+	   echo 'deserialize'.$myThing['name_id'].'("#'.$myThing['name_id'].$node['id'].'");';
        }
+       ?>
 
-       setTimeout( progress, 2000 );
-
-       // TODO:
-       setupDraggable('#Draggable18');
-       deserializeDraggable("#Draggable18");
+       //removeDraggable("n1");
    });
   </script>
   <div id="toolbar" class="ui-widget-header ui-corner-all">
