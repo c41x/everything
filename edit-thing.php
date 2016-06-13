@@ -27,20 +27,25 @@ else {
      $(function() {
 	 $("input[type=submit]")
 	     .button()
-	     .click(function( event ) {
+	     .click(function(event) {
 		 event.preventDefault();
 
 		 $.ajax({
 		     url: $("#editForm").attr("action"),
 		     type: 'POST',
+		     dataType: "json",
 		     data: $("#editForm").serialize(),
 		     success: function(result) {
-			 alert(result);
-			 color = $("#submitButton").css("background");
-			 $("#submitButton").css("background", "GreenYellow");
-			 setTimeout(function() {
-			     $("#submitButton").css("background", color);
-			 }, 3000);
+			 if (result.error) {
+			     alert(result.desc);
+			 }
+			 else {
+			     color = $("#submitButton").css("background");
+			     $("#submitButton").css("background", "GreenYellow");
+			     setTimeout(function() {
+				 $("#submitButton").css("background", color);
+			     }, 3000);
+			 }
 		     },
 		     error: function(a, b, c) {
 			 alert(a);
