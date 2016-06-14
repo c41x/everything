@@ -90,8 +90,8 @@ if ($db->connect_errno !== 0) {
 else {
     addLine('connection to MySQL database established.');
     if ($_GET) {
-	if (isset($_GET['install']) && $_POST && isset($_POST['name_id']) && isset($_POST['pretty_name']) &&
-	    isset($_POST['html']) && isset($_POST['js']) && isset($_POST['css'])) {
+	if (getPassed('install') && postPassed('name_id') && postPassed('pretty_name') &&
+	    postPassed('html') && postPassed('js') && postPassed('css')) {
 	    if ($db->query('INSERT INTO things (name_id, pretty_name, html, js, css) VALUES ('.
 			   '\''.mysqli_escape_string($db, $_POST['name_id']).'\', '.
 			   '\''.mysqli_escape_string($db, $_POST['pretty_name']).'\', '.
