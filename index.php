@@ -18,6 +18,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 ?>
 <!DOCTYPE html>
 <meta charset="utf-8">
+<head>
 <title>Everything</title>
 
 <style>
@@ -36,6 +37,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</head>
 <body>
   <script>
    $(function() {
@@ -128,7 +130,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
       echo str_replace('{id}', $myThing['name_id'].$node['id'], $myThing['html']);
   }
   ?>
-</body>
+</body></html>
 <?php
 $db->close();
 ?>
