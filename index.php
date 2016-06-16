@@ -35,8 +35,11 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 </style>
 
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="external/content-tools.min.css">
+<link rel="stylesheet" type="text/css" href="external/content-tools-alignment.css">
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="external/content-tools.min.js"></script>
 </head>
 <body>
   <script>
