@@ -20,11 +20,29 @@ else {
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="external/ace/ace.js" type="text/javascript" charset="utf-8"></script>
     <style>
      .ui-button { font-size: .7em; }
+     #editJs { width: 1000px; height: 500px; }
+     #editCSS { width: 1000px; height: 200px; }
+     #editHTML { width: 1000px; height: 300px; }
+     body { background: #2b2b2b; color: grey; margin: 50px; }
     </style>
     <script>
      $(function() {
+
+	 var editJs = ace.edit("editJs");
+	 editJs.setTheme("ace/theme/monokai");
+	 editJs.getSession().setMode("ace/mode/javascript");
+
+	 var editHTML = ace.edit("editHTML");
+	 editHTML.setTheme("ace/theme/monokai");
+	 editHTML.getSession().setMode("ace/mode/html");
+
+	 var editCSS = ace.edit("editCSS");
+	 editCSS.setTheme("ace/theme/monokai");
+	 editCSS.getSession().setMode("ace/mode/css");
+
 	 $("input[type=submit]")
 	     .button()
 	     .click(function(event) {
@@ -34,7 +52,11 @@ else {
 		     url: $("#editForm").attr("action"),
 		     type: 'POST',
 		     dataType: "json",
-		     data: $("#editForm").serialize(),
+		     data: {name_id: $("#name_id").val(),
+			    pretty_name: $("#pretty_name").val(),
+			    js: editJs.getValue(),
+			    html: editHTML.getValue(),
+			    css: editCSS.getValue()},
 		     success: function(result) {
 			 if (result.error) {
 			     alert(result.desc);
@@ -59,12 +81,12 @@ else {
   </head>
   <body>
     <form id="editForm" action="set-thing.php?id=<?php echo $thing['id']; ?>" method="post">
-      Name ID: <br /><input type="text" name="name_id" value="<?php echo $thing['name_id']; ?>"></textarea><br />
-      Pretty Name: <br /><input type="text" name="pretty_name" value="<?php echo $thing['pretty_name']; ?>"></textarea><br />
-      HTML: <br /><textarea rows="10" cols="100" name="html"><?php echo $thing['html']; ?></textarea><br />
-      JS: <br /><textarea rows="10" cols="100" name="js"><?php echo $thing['js']; ?></textarea><br />
-      CSS: <br /><textarea rows="10" cols="100" name="css"><?php echo $thing['css']; ?></textarea><br />
-      <input id="submitButton" type="submit" value="Save">
+      Name ID: <br /><input type="text" name="name_id" id="name_id" value="<?php echo $thing['name_id']; ?>"></textarea><br />
+      Pretty Name: <br /><input type="text" name="pretty_name" id="pretty_name" value="<?php echo $thing['pretty_name']; ?>"></textarea><br /><br />
+      <input id="submitButton" type="submit" value="Save"><br /><br />
+      HTML: <br /><div id="editHTML"><?php echo htmlspecialchars($thing['html']); ?></div><br />
+      JS: <br /><div id="editJs"><?php echo htmlspecialchars($thing['js']); ?></div><br />
+      CSS: <br /><div id="editCSS"><?php echo htmlspecialchars($thing['css']); ?></div>
     </form>
   </body>
 </html>
