@@ -6,9 +6,9 @@ if (getPassed('id') && postPassed('name_id') && postPassed('pretty_name') &&
     if ($db->query('UPDATE things SET '.
 		   'name_id=\''.mysqli_escape_string($db, $_POST['name_id']).'\', '.
 		   'pretty_name=\''.mysqli_escape_string($db, $_POST['pretty_name']).'\', '.
-		   'html=\''.mysqli_escape_string($db, $_POST['html']).'\', '.
-		   'js=\''.mysqli_escape_string($db, $_POST['js']).'\', '.
-		   'css=\''.mysqli_escape_string($db, $_POST['css']).'\''.
+		   'html=\''.htmlspecialchars_decode(mysqli_escape_string($db, $_POST['html'])).'\', '.
+		   'js=\''.htmlspecialchars_decode(mysqli_escape_string($db, $_POST['js'])).'\', '.
+		   'css=\''.htmlspecialchars_decode(mysqli_escape_string($db, $_POST['css'])).'\''.
 		   ' WHERE id='.$_GET['id']) === FALSE) {
 	exit('{"error" : true, "desc" : "update query failed"}');
     }
