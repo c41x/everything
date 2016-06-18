@@ -22,7 +22,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <title>Everything</title>
 
 <style>
- body { margin: 0; }
+ body { margin: 0; background: #eeeeee; }
  .ui-button-text { font-size: .7em; }
  .ui-progressbar, toolbar {
    position: fixed;
