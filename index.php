@@ -1,5 +1,8 @@
 <?php
+session_start();
 require 'engine.php';
+
+// get all things
 $thingsResult = $db->query('SELECT * FROM things');
 $things = array();
 if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
@@ -8,7 +11,34 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
     }
 }
 
-$nodesResult = $db->query('SELECT * FROM nodes');
+// detect current page
+$pageID = 1;
+if (getPassed('id') && is_numeric($_GET['id'])) {
+    $pageID = $_GET['id'];
+}
+
+// get current page info
+$pageResult = $db->query('SELECT * FROM pages WHERE id='.$pageID);
+$page = NULL;
+if ($pageResult !== FALSE && $pageResult->num_rows > 0) {
+    while ($row = $pageResult->fetch_assoc()) {
+	$page = $row;
+    }
+}
+
+// if page not found in database -> return empty page
+if ($page === NULL) {
+    die("Wrong page ID passed");
+}
+
+// remember current page
+if (!isset($_SESSION['path']))
+    $_SESSION['path'] = array();
+if ((!empty($_SESSION['path']) && end($_SESSION['path'])[0] !== $pageID) || empty($_SESSION['path']))
+    array_push($_SESSION['path'], array($pageID, $page['title']));
+
+// load page nodes
+$nodesResult = $db->query('SELECT * FROM nodes WHERE id_page='.$pageID);
 $nodes = array();
 if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
     while ($row = $nodesResult->fetch_assoc()) {
@@ -51,7 +81,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
        var genericSpawn = function(type, setupFunction, serializeFunction) {
 	   $.ajax({
 	       dataType: "json",
-	       url: "create-node.php?type=" + type,
+	       url: "create-node.php?type=" + type + "&page=" + <?php echo $pageID; ?>,
 	       success: function(data) {
 		   if (!data.error) {
 		       alert("spawning: " + data.html);
@@ -116,6 +146,24 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
        }
        ?>
 
+       // create some page / test
+       $("#createpage").click(function() {
+	   $.ajax({
+	       url: "create-page.php",
+	       method: "POST",
+	       dataType: "json",
+	       data: {title: "Granite Engine"},
+	       success: function(data) {
+		   if (data.error) alert(data.desc);
+		   else alert("created page with ID = " + data.id);
+	       },
+	       error: function(a, b, c) {
+		   alert(b);
+		   alert(c);
+	       }
+	   });
+       });
+
        //removeDraggable("n1");
    });
   </script>
@@ -133,7 +181,14 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
       echo str_replace('{id}', $myThing['name_id'].$node['id'], $myThing['html']);
   }
   ?>
+  <!-- >p><?php echo print_r($_SESSION['path']); ?></p-->
+  <p id="createpage">Create page</p>
 </body></html>
 <?php
 $db->close();
+// TODO: links (breadcrumbs)
+// TODO: resources
+// TODO: admin panel
+// TODO: mod_rewrite
+// TODO: removing
 ?>

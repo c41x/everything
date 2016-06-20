@@ -10,13 +10,14 @@ function processID(&$thing, $iid) {
     return $thing['name_id'].$iid;
 }
 
-if (getPassed('type')) {
+if (getPassed('type') && getPassed('page') && is_numeric($_GET['page'])) {
     $thingResult = $db->query('SELECT * FROM things WHERE name_id="'.
 			      mysqli_escape_string($db, $_GET['type']).'"');
     if ($thingResult !== FALSE && $thingResult->num_rows > 0) {
 	$thing = $thingResult->fetch_assoc();
-	$nodeResult = $db->query('INSERT INTO nodes (id_things, state) VALUES('.
-				 $thing['id'].', "")');
+	$nodeResult = $db->query('INSERT INTO nodes (id_things, id_page, state) VALUES('.
+				 $thing['id'].', '.
+				$_GET['page'].',"")');
 	if ($nodeResult !== FALSE) {
 	    $iid = $db->insert_id;
 	    $data = array('html' => processHTML($thing, $iid),
@@ -32,7 +33,7 @@ if (getPassed('type')) {
     }
 }
 else {
-    exit('{"error" : true, "desc" : "type not specified"}');
+    exit('{"error" : true, "desc" : "type / page not specified"}');
 }
 
 ?>

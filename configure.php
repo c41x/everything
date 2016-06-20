@@ -40,6 +40,7 @@ function initializeDatabse($db) {
 	if ($db->query('CREATE TABLE nodes ('.
 		       'id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,'.
 		       'id_things INT UNSIGNED NOT NULL, '.
+		       'id_page INT UNSIGNED NOT NULL, '.
 		       'state TEXT'.$charsetPostfix.
 		       ')') == FALSE) {
 	    addLine('error creating things nodes');
@@ -58,28 +59,16 @@ function initializeDatabse($db) {
 	if ($db->query('CREATE TABLE pages ('.
 		       'id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, '.
 		       'title VARCHAR(255)'.$charsetPostfix.
-		       ')') == FALSE) {
+		       ')') != FALSE) {
+	    if ($db->query('INSERT INTO `pages` (`id`, `title`) VALUES (NULL, \'Root\')') == FALSE) {
+		addLine('error creating pages table, could not insert root element');
+	    }
+	    else {
+		addLine('table pages created');
+	    }
+	}
+	else {
 	    addLine('error creating pages table');
-	}
-	else {
-	    addLine('table pages created');
-	}
-    }
-
-    // page_nodes
-    if (tableExists($db, 'page_nodes')) {
-	addLine('table page_nodes - ok');
-    }
-    else {
-	addLine('creating page_nodes table...');
-	if ($db->query('CREATE TABLE page_nodes ('.
-		       'id_page INT UNSIGNED NOT NULL, '.
-		       'id_node INT UNSIGNED NOT NULL'.
-		       ')') == FALSE) {
-	    addLine('error creating page_nodes table');
-	}
-	else {
-	    addLine('table page_nodes created');
 	}
     }
 }
