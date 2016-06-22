@@ -1,0 +1,5 @@
+.page-link { width: 180px; height: 28px; padding: 0.5em; border: 1px solid gray; border-radius: 5px; text-align: center; }
+.ui-dialog { padding: .3em; font-size: 0.8em !important; }
+label.link-dialog, input.link-dialog { display:block; }
+input.link-dialog-text { margin-bottom:12px; width:95%; padding: .4em; }
+fieldset.link-dialog { padding:0; border:0; margin-top:25px; }
