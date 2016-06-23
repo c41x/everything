@@ -26,6 +26,7 @@ else {
      #editJs { width: 1000px; height: 500px; }
      #editCSS { width: 1000px; height: 200px; }
      #editHTML { width: 1000px; height: 300px; }
+     #editStaticHTML { width: 1000px; height: 300px; }
      body { background: #2b2b2b; color: grey; margin: 50px; }
     </style>
     <script>
@@ -38,6 +39,10 @@ else {
 	 var editHTML = ace.edit("editHTML");
 	 editHTML.setTheme("ace/theme/monokai");
 	 editHTML.getSession().setMode("ace/mode/html");
+
+	 var editStaticHTML = ace.edit("editStaticHTML");
+	 editStaticHTML.setTheme("ace/theme/monokai");
+	 editStaticHTML.getSession().setMode("ace/mode/html");
 
 	 var editCSS = ace.edit("editCSS");
 	 editCSS.setTheme("ace/theme/monokai");
@@ -56,6 +61,7 @@ else {
 			    pretty_name: $("#pretty_name").val(),
 			    js: editJs.getValue(),
 			    html: editHTML.getValue(),
+			    static_html: editStaticHTML.getValue(),
 			    css: editCSS.getValue()},
 		     success: function(result) {
 			 if (result.error) {
@@ -85,6 +91,7 @@ else {
       Pretty Name: <br /><input type="text" name="pretty_name" id="pretty_name" value="<?php echo $thing['pretty_name']; ?>"></textarea><br /><br />
       <input id="submitButton" type="submit" value="Save"><br /><br />
       HTML: <br /><div id="editHTML"><?php echo htmlspecialchars($thing['html']); ?></div><br />
+      Static HTML: <br /><div id="editStaticHTML"><?php echo htmlspecialchars($thing['static_html']); ?></div><br />
       JS: <br /><div id="editJs"><?php echo htmlspecialchars($thing['js']); ?></div><br />
       CSS: <br /><div id="editCSS"><?php echo htmlspecialchars($thing['css']); ?></div>
     </form>

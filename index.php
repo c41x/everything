@@ -176,6 +176,10 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
   </div>
   <div id="loadingbar"></div>
   <?php
+  foreach ($things as &$thing) {
+      echo $thing['static_html'];
+  }
+
   foreach ($nodes as &$node) {
       $myThing = $things[$node['id_things']];
       echo str_replace('{id}', $myThing['name_id'].$node['id'], $myThing['html']);
