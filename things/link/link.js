@@ -30,10 +30,11 @@ var deserializeLink = function(id) {
 	success: function(data) {
             if (data.error) alert(data.desc);
             else {
-		var json = $.parseJSON(data.state);alert(JSON.stringify(data));
+		var json = $.parseJSON(data.state);
 	        $(id).offset(json);
-		$(id + "Link").attr("href", "index.php?id=" + json.id);
-		$(id + "Link").html(json.desc);
+	        var link = $(id + "Link");
+		link.attr("href", "index.php?id=" + json.id);
+		link.html(json.desc);
 		onNodeDeserialized();
             }
 	},
@@ -44,15 +45,28 @@ var deserializeLink = function(id) {
     });
 };
 
+var showSettingsTimeout = null;
+
 var setupLink = function(id) {
     $(id).draggable({
         stop: function() {
 	    serializeLink(id);
         }
+    }).mouseenter(function(e) {
+	showSettingsTimeout = setTimeout(function() {
+	    $(id + "Settings").show("blind");
+	}, 1000);
+    }).mouseleave(function(e) {
+	if (showSettingsTimeout !== null) {
+	    clearTimeout(showSettingsTimeout);
+	    showSettingsTimeout = null;
+	}
+
+	$(id + "Settings").hide("blind");
     });
 };
 
-var addUser = function(id, desc) {
+var processLink = function(id, desc) {
     $.ajax({
 	url: "create-page.php",
 	method: "POST",
@@ -61,11 +75,10 @@ var addUser = function(id, desc) {
 	success: function(data) {
 	    if (data.error) alert(data.desc);
 	    else {
-		alert("created page with ID = " + data.id);
-		alert("desc = " + desc);
-		alert("id = " + id);
-		$("#" + id + "Link").attr('href', "index.php?id=" + data.id);
-		$("#" + id + "Link").html(desc);
+		var link = $("#" + id + "Link");
+		link.attr('href', "index.php?id=" + data.id);
+		link.html(desc);
+		serializeLink("#" + id);
 	    }
 	},
 	error: function(a, b, c) {
@@ -76,13 +89,13 @@ var addUser = function(id, desc) {
     dialog.dialog( "close" );
 }
 
-dialog = $( "#dialog-form" ).dialog({
+dialog = $("#link-setup-dialog").dialog({
     autoOpen: false,
     height: 250,
     width: 300,
     modal: true,
     buttons: {
-        "Set Link": function () { addUser($(this).data("id"), $("#new-page-title").val()); },
+        "Set Link": function () { processLink($(this).data("id"), $("#new-page-title").val()); },
         Cancel: function() {
             dialog.dialog( "close" );
         }
@@ -94,15 +107,13 @@ dialog = $( "#dialog-form" ).dialog({
 
 form = dialog.find( "form" ).on( "submit", function( event ) {
     event.preventDefault();
-    alert("addin usa");
+    processLink($(dialog).data("id"), $("#new-page-title").val());
 });
 
-$( ".create-page" ).button().on( "click", function() {
+$(".setup-page").on( "click", function() {
     dialog.data('id', $(this).parent().attr("id"))
-        .dialog( "open" );
+	.dialog( "open" );
 });
 
-$( ".link-page" ).button().on( "click", function() {
-    dialog.data('id', $(this).parent().attr("id"))
-        .dialog( "open" );
-});
+
+$("#new-page-id").autocomplete({source: "get-pages.php"});
