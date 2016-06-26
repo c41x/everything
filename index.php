@@ -49,7 +49,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-<title>Everything</title>
+<title>Everything - <?php echo $page['title']; ?></title>
 
 <style>
  body { margin: 0; background: #eeeeee; }
@@ -57,6 +57,83 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
  .ui-progressbar, toolbar {
    position: fixed;
  }
+
+ .breadcrumbs {
+   margin: 0;
+   padding: 0;
+   list-style: none;
+   position: fixed;
+   bottom: 0px;
+ }
+
+ #breadcrumbs {
+   background: #eee;
+   border-width: 0px;
+   box-shadow: 0 0 2px rgba(0,0,0,.2);
+   overflow: hidden;
+ }
+
+ #breadcrumbs li {
+   float: left;
+ }
+
+ #breadcrumbs a {
+   padding: .2em 1em .2em 2em;
+   float: left;
+   text-decoration: none;
+   color: #444;
+   position: relative;
+   text-shadow: 0 1px 0 rgba(255,255,255,.5);
+   background-color: #ddd;
+ }
+
+ #breadcrumbs li:first-child a {
+   padding-left: 1em;
+   border-radius: 5px 0 0 5px;
+ }
+
+ #breadcrumbs a:hover {
+   background: #fff;
+ }
+
+ #breadcrumbs a::after,
+ #breadcrumbs a::before {
+   content: "";
+   position: absolute;
+   top: 50%;
+   margin-top: -1.5em;
+   border-top: 1.5em solid transparent;
+   border-bottom: 1.5em solid transparent;
+   border-left: 1em solid;
+   right: -1em;
+ }
+
+ #breadcrumbs a::after {
+   z-index: 2;
+   border-left-color: #ddd;
+ }
+
+ #breadcrumbs a::before {
+   border-left-color: #ccc;
+   right: -1.1em;
+   z-index: 1;
+ }
+
+ #breadcrumbs a:hover::after {
+   border-left-color: #fff;
+ }
+
+ #breadcrumbs .current,
+ #breadcrumbs .current:hover {
+   font-weight: bold;
+   background: none;
+ }
+
+ #breadcrumbs .current::after,
+ #breadcrumbs .current::before {
+   content: normal;
+ }
+
  <?php
  foreach ($things as &$thing) {
      echo $thing['css'];
@@ -84,7 +161,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 	       url: "create-node.php?type=" + type + "&page=" + <?php echo $pageID; ?>,
 	       success: function(data) {
 		   if (!data.error) {
-		       alert("spawning: " + data.html);
+		       //alert("spawning: " + data.html);
 		       $(document.body).append(data.html);
 		       setupFunction("#" + data.id);
 		       serializeFunction("#" + data.id);
@@ -146,24 +223,6 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
        }
        ?>
 
-       // create some page / test
-       $("#createpage").click(function() {
-	   $.ajax({
-	       url: "create-page.php",
-	       method: "POST",
-	       dataType: "json",
-	       data: {title: "Granite Engine"},
-	       success: function(data) {
-		   if (data.error) alert(data.desc);
-		   else alert("created page with ID = " + data.id);
-	       },
-	       error: function(a, b, c) {
-		   alert(b);
-		   alert(c);
-	       }
-	   });
-       });
-
        //removeDraggable("n1");
    });
   </script>
@@ -185,14 +244,30 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
       echo str_replace('{id}', $myThing['name_id'].$node['id'], $myThing['html']);
   }
   ?>
-  <!-- >p><?php echo print_r($_SESSION['path']); ?></p-->
-  <p id="createpage">Create page</p>
+  <ul class="breadcrumbs" id="breadcrumbs">
+    <li><a href="index.php">&#127968;</a></li>
+    <?php
+    // limit to 5 elements
+    while (count($_SESSION['path']) > 7)
+	array_shift($_SESSION['path']);
+
+    $count = count($_SESSION['path']);
+    $i = 0;
+    foreach ($_SESSION['path'] as &$path) {
+	$class = '';
+	if (++$i === $count)
+	    $class = ' class="current"';
+	echo '<li><a href="index.php?id='.$path[0].'"'.$class.'>'.$path[1].'</a></li>';
+    }
+    ?>
+</ul>
 </body></html>
 <?php
 $db->close();
-// TODO: links (breadcrumbs)
+
 // TODO: resources
 // TODO: admin panel
 // TODO: mod_rewrite
 // TODO: removing
+// TODO: code editor link
 ?>

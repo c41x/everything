@@ -6,7 +6,7 @@ if (getPassed('id') && is_numeric($_GET['id'])) {
 	$thing = $thingResult->fetch_assoc();
     }
     else {
-	exit('query error: '.'SELECT * FROM things WHERE id='.$_GET['id']);
+	exit('query error: could not found id in database - '.$_GET['id']);
     }
 }
 else {

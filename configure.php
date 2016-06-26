@@ -61,7 +61,7 @@ function initializeDatabse($db) {
 		       'id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, '.
 		       'title VARCHAR(255)'.$charsetPostfix.
 		       ')') != FALSE) {
-	    if ($db->query('INSERT INTO `pages` (`id`, `title`) VALUES (NULL, \'Root\')') == FALSE) {
+	    if ($db->query('INSERT INTO `pages` (`id`, `title`) VALUES (NULL, \'Home\')') == FALSE) {
 		addLine('error creating pages table, could not insert root element');
 	    }
 	    else {
