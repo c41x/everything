@@ -64,6 +64,11 @@ var setupLink = function(id) {
 
 	$(id + "Settings").hide("blind");
     });
+
+    $(".setup-page").on( "click", function() {
+	dialog.data('id', $(this).parent().attr("id"))
+	    .dialog( "open" );
+    });
 };
 
 var processLink = function(id, desc) {
@@ -108,11 +113,6 @@ dialog = $("#link-setup-dialog").dialog({
 form = dialog.find( "form" ).on( "submit", function( event ) {
     event.preventDefault();
     processLink($(dialog).data("id"), $("#new-page-title").val());
-});
-
-$(".setup-page").on( "click", function() {
-    dialog.data('id', $(this).parent().attr("id"))
-	.dialog( "open" );
 });
 
 
