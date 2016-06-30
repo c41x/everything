@@ -7,12 +7,4 @@ if ($db->connect_errno !== 0) {
 	exit('{"error" : true, "desc" : "could not connect to database"}');
     exit("could not connect to databse");
 }
-
-function getPassed($name) {
-    return $_GET && isset($_GET[$name]);
-}
-
-function postPassed($name) {
-    return $_POST && isset($_POST[$name]);
-}
 ?>
