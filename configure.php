@@ -82,7 +82,7 @@ else {
     if ($_GET) {
 	if (getPassed('install') && postPassed('name_id') && postPassed('pretty_name') &&
 	    postPassed('html') && postPassed('static_html') && postPassed('js') && postPassed('css')) {
-	    if ($db->query('INSERT INTO things (name_id, pretty_name, html, js, css) VALUES ('.
+	    if ($db->query('INSERT INTO things (name_id, pretty_name, html, static_html, js, css) VALUES ('.
 			   '\''.mysqli_escape_string($db, $_POST['name_id']).'\', '.
 			   '\''.mysqli_escape_string($db, $_POST['pretty_name']).'\', '.
 			   '\''.mysqli_escape_string($db, $_POST['html']).'\', '.
