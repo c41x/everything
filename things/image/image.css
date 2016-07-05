@@ -1,1 +1,20 @@
-.image-node { width: 100px; height: 100px; padding: 0.5em; border: 1px solid gray; border-radius: 5px; }
+.image-node { width: 100px; height: 50px; padding: 0px; border: 1px solid gray; }
+
+.ui-dialog { padding: .3em; font-size: 0.8em !important; }
+label.image-dialog, input.image-dialog { display:block; }
+input.image-dialog-text { margin-bottom:12px; width:95%; padding: .4em; }
+fieldset.image-dialog { padding:0; border:0; margin-top:25px; }
+
+@font-face {
+  font-family: icons;
+  src: url("external/icons.woff");
+}
+
+.setup-image {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-family: icons;
+  cursor: pointer;
+  z-index: 101;
+}
