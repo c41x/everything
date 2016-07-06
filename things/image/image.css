@@ -1,4 +1,4 @@
-.image-node { width: 100px; height: 50px; padding: 0px; border: 1px solid gray; }
+.image-node { width: 150px; height: 50px; padding: 0px; border: 1px solid gray; position: absolute !important; }
 
 .ui-dialog { padding: .3em; font-size: 0.8em !important; }
 label.image-dialog, input.image-dialog { display:block; }
