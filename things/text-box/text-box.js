@@ -51,17 +51,8 @@ var deserializeTextBox = function(id) {
 };
 
 var setupTextBox = function(id) {
-    // main JS logic on id - initialize all
     $(id).draggable({
-        drag: function() {
-	    var offset = $(this).offset();
-	    var xPos = offset.left;
-	    var yPos = offset.top;
-	    $('#posX').text('x: ' + xPos);
-	    $('#posY').text('y: ' + yPos);
-        },
-        stop: function() {
-	    // just tests
+	stop: function() {
 	    serializeTextBox(id);
         }
     }).resizable({
