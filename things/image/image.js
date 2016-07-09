@@ -1,12 +1,3 @@
-function escapeTags( str ) {
-    return String( str )
-	.replace( /&/g, '&' )
-	.replace( /"/g, '"' )
-	.replace( /'/g, '&#39;' )
-	.replace( /</g, '<' )
-	.replace( />/g, '>' );
-}
-
 var initUploader = function(progressID, messageID, onSubmit, onSuccess) {
     var progressBar = $(progressID),
 	msgBox = $(messageID);
@@ -42,7 +33,7 @@ var initUploader = function(progressID, messageID, onSubmit, onSuccess) {
 	    }
 	    else {
 		if (response.desc) {
-		    msgBox.html(escapeTags(response.desc));
+		    msgBox.html(response.desc);
 		}
 		else {
 		    msgBox.html('An error occurred and the upload failed.');
@@ -57,13 +48,41 @@ var initUploader = function(progressID, messageID, onSubmit, onSuccess) {
     return uploader;
 };
 
+var saveImageFromURL = function() {
+    var dataToSend = {url: decodeURIComponent($("#image-url").val())}; // get value before dialog close (on close resets form)
+    dialogImg.dialog("close");
+    $.ajax({
+	type: "POST",
+	url: "create-resource.php?fromURL=",
+	data: dataToSend,
+	dataType: "json",
+	success: function(data) {
+	    alert("DONE");
+	    var id = dialogImg.data("id");
+	    if (data.error) {
+		alert(data.desc);
+		$("#" + id + "Message").html(data.desc);
+	    }
+	    else {
+		alert("OK");
+		adjustImageAspectRatio($("#" + id), $("#" + id + "Image"), true, true);
+		$("#" + id + "Image").attr("src", "resources/" + data.id);
+	    }
+	},
+	error: function(a, b, c) {
+	    alert("sending error: " + dataToSend);
+	    alert(b);
+	    alert(c);
+	}});
+};
+
 dialogImg = $("#image-setup-dialog").dialog({
     autoOpen: false,
     height: 350,
     width: 300,
     modal: true,
     buttons: {
-	"From URL": function() { alert("save file for node: " + $(this).data("id")); },
+	"From URL": saveImageFromURL,
 	"From File": {
 	    text: "From File",
 	    id: "imageUploadButton"
@@ -77,9 +96,9 @@ dialogImg = $("#image-setup-dialog").dialog({
     }
 });
 
-form = dialogImg.find( "form" ).on( "submit", function( event ) {
+form = dialogImg.find( "form" ).on("submit", function(event) {
     event.preventDefault();
-    alert("save file for node (by URL): " + $(dialogImg).data("id"));
+    saveImageFromURL();
 });
 
 var adjustImageAspectRatio = function(node, image, adjustWidthAlso, serializeAtEnd) {
@@ -159,7 +178,6 @@ var setupImage = function(id) {
 	    clearTimeout(showSettingsTimeout);
 	    showSettingsTimeout = null;
 	}
-
 	$(id + "Settings").hide("blind");
     });
 
