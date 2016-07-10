@@ -148,6 +148,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script src="external/content-tools.min.js"></script>
 <script src="external/SimpleAjaxUploader.min.js"></script>
+<script src="external/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
   <script>
@@ -266,9 +267,9 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <?php
 $db->close();
 
-// TODO: resources
 // TODO: admin panel
 // TODO: mod_rewrite
 // TODO: removing
-// TODO: code editor link
+// TODO: file thing
+
 ?>
