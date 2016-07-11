@@ -309,7 +309,7 @@ if (getPassed('fromURL') && postPassed('url')) {
     fclose($f);
 
     if ($error) {
-	exit(json_encode(array('error' => true, 'desc' => curl_error())));
+	exit(json_encode(array('error' => true, 'desc' => curl_error($ch))));
     }
 
     echo json_encode(array('error' => false, 'id' => $filename));
