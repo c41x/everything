@@ -52,7 +52,11 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <title>Everything - <?php echo $page['title']; ?></title>
 
 <style>
- body { margin: 0; background: #eeeeee; }
+ body {
+   margin: 0;
+   background: #eeeeee;
+   font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+ }
  .ui-button-text { font-size: .7em; }
  .ui-progressbar, toolbar {
    position: fixed;
@@ -271,5 +275,6 @@ $db->close();
 // TODO: mod_rewrite
 // TODO: removing
 // TODO: file thing
+// TODO: lightbox for images?
 
 ?>
