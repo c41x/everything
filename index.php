@@ -138,6 +138,13 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
    content: normal;
  }
 
+ .thrash-hover>img {
+   -webkit-transform: scale(1.5);
+   -moz-transform: scale(1.5);
+   -o-transform: scale(1.5);
+   transform: scale(1.5);
+ }
+
  <?php
  foreach ($things as &$thing) {
      echo $thing['css'];
@@ -183,13 +190,18 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 	   });
        }
 
-       var genericRemove = function(id) {
+       var genericRemove = function(id, domID) {
 	   $.ajax({
 	       dataType: "json",
 	       url: "delete-node.php?id=" + id,
 	       success: function(data) {
-		   alert("deleted node " + id + " response: " + data.result);
-		   $("#" + id).remove();
+		   if (!data.error) {
+		       //alert("deleted node " + id + " response: " + data.desc);
+		       $("#" + domID).remove();
+		   }
+		   else {
+		       alert("error deleting node: " + data.desc);
+		   }
 	       },
 	       error: function(a, b, c) {
 		   alert(b);
@@ -204,7 +216,6 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 	   echo $thing['js'];
 	   echo 'var spawn'.$thing['name_id'].' = function() { genericSpawn("'.
 		$thing['name_id'].'", setup'.$thing['name_id'].', serialize'.$thing['name_id'].'); };';
-	   echo 'remove'.$thing['name_id'].' = function(id) { genericRemove(id); };';
 	   echo '$("#btnCreate'.$thing['name_id'].'").button().click(spawn'.$thing['name_id'].');';
        }
        ?>
@@ -229,7 +240,13 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
        }
        ?>
 
-       //removeDraggable("n1");
+       $("#trashCan").droppable({
+	   drop: function(event, ui) {
+	       genericRemove(toID(ui.draggable.attr("id")), ui.draggable.attr("id"));
+	   },
+	   hoverClass: "thrash-hover",
+	   tolerance: "pointer"
+       });
    });
   </script>
   <div id="toolbar" class="ui-widget-header ui-corner-all">
@@ -250,6 +267,11 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
       echo str_replace('{id}', $myThing['name_id'].$node['id'], $myThing['html']);
   }
   ?>
+
+  <div id="trashCan" style="position: fixed; right: 0px; bottom: 0px; width: 150px; height: 150px; padding: 0.5em; float: left; margin: 10px;">
+    <img src="external/trash.png" style="position: fixed; right: 50px; bottom: 50px;">
+  </div>
+
   <ul class="breadcrumbs" id="breadcrumbs">
     <li><a href="index.php">&#127968;</a></li>
     <?php
@@ -273,8 +295,9 @@ $db->close();
 
 // TODO: admin panel
 // TODO: mod_rewrite
-// TODO: removing
 // TODO: file thing
 // TODO: lightbox for images?
+// TODO: removing: onDelete
+// TODO: clean state
 
 ?>
