@@ -55,6 +55,8 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
  body {
    margin: 0;
    background: #eeeeee;
+   background-image: url("external/background.png");
+   background-repeat: repeat;
    font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
  }
  .ui-button-text { font-size: .7em; }
@@ -210,12 +212,48 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 	   });
        };
 
+       var genericLoad = function(id, deserializeFunction) {
+	   $.ajax({
+	       dataType: "json",
+	       url: "get-node.php?id=" + toID(id),
+	       success: function(data) {
+		   if (data.error) alert(data.desc);
+		   else onNodeDeserialized();
+		   deserializeFunction(data);
+	       },
+	       error: function(a, b, c) {
+		   alert(b);
+		   alert(c);
+	       }
+	   });
+       };
+
+       var genericSave = function(id, serializeFunction) {
+	   $.ajax({
+	       type: "POST",
+	       url: "set-node.php?id=" + toID(id),
+	       data: { state: serializeFunction(id) },
+	       dataType: "json",
+	       success: function(data) {
+		   if (data.error)
+		       alert(data.desc);
+	       },
+	       error: function(a, b, c) {
+		   alert("sending error: " + dataToSend);
+		   alert(b);
+		   alert(c);
+	       }
+	   });
+       };
+
        <?php
        // generate all js code
        foreach ($things as &$thing) {
 	   echo $thing['js'];
+	   echo 'var save'.$thing['name_id'].' = function(id) { genericSave(id, serialize'.$thing['name_id'].'); };';
+	   // TODO: load
 	   echo 'var spawn'.$thing['name_id'].' = function() { genericSpawn("'.
-		$thing['name_id'].'", setup'.$thing['name_id'].', serialize'.$thing['name_id'].'); };';
+		$thing['name_id'].'", setup'.$thing['name_id'].', save'.$thing['name_id'].'); };';
 	   echo '$("#btnCreate'.$thing['name_id'].'").button().click(spawn'.$thing['name_id'].');';
        }
        ?>
@@ -235,8 +273,9 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
        <?php
        foreach ($nodes as &$node) {
 	   $myThing = $things[$node['id_things']];
-	   echo 'setup'.$myThing['name_id'].'("#'.$myThing['name_id'].$node['id'].'");';
-	   echo 'deserialize'.$myThing['name_id'].'("#'.$myThing['name_id'].$node['id'].'");';
+	   $id = '"#'.$myThing['name_id'].$node['id'].'"';
+	   echo 'setup'.$myThing['name_id'].'('.$id.');';
+	   echo 'genericLoad('.$id.', function(data) { deserialize'.$myThing['name_id'].'('.$id.', data); });';
        }
        ?>
 
@@ -293,11 +332,13 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <?php
 $db->close();
 
-// TODO: admin panel
-// TODO: mod_rewrite
 // TODO: file thing
 // TODO: lightbox for images?
 // TODO: removing: onDelete
-// TODO: clean state
+// TODO: code box language bug
+
+// not important
+// TODO: admin panel
+// TODO: mod_rewrite
 
 ?>

@@ -1,1 +1,1 @@
-.draggable { width: 150px; height: 150px; padding: 0.5em; border: 1px solid gray; border-radius: 5px; }
+.draggable { width: 150px; height: 150px; padding: 0.5em; border: 1px solid gray; border-radius: 5px; position: absolute !important; }
