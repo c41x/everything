@@ -57,14 +57,11 @@ var saveImageFromURL = function() {
 	data: dataToSend,
 	dataType: "json",
 	success: function(data) {
-	    alert("DONE");
 	    var id = dialogImg.data("id");
 	    if (data.error) {
-		alert(data.desc);
 		$("#" + id + "Message").html(data.desc);
 	    }
 	    else {
-		alert("OK");
 		adjustImageAspectRatio($("#" + id), $("#" + id + "Image"), true, true);
 		$("#" + id + "Image").attr("src", "resources/" + data.id);
 	    }
@@ -107,68 +104,40 @@ var adjustImageAspectRatio = function(node, image, adjustWidthAlso, serializeAtE
 	if (adjustWidthAlso)
 	    node.width(node.height() * ar);
 	node.resizable("destroy");
-	node.resizable({aspectRatio: ar, stop: function() { serializeImage("#" + node.attr("id")); }});
+	node.resizable({aspectRatio: ar, stop: function() { saveImage("#" + node.attr("id")); }});
 	if (serializeAtEnd)
-	    serializeImage("#" + node.attr("id"));
+	    saveImage("#" + node.attr("id"));
     });
 };
 
 var serializeImage = function(id) {
     var obj = $(id);
     var imageObj = $(id + "Image");
-    var dataToSend = JSON.stringify({"top" : obj.offset().top,
-				     "left" : obj.offset().left,
-				     "width" : obj.width(),
-				     "height" : obj.height(),
-				     "url" : imageObj.attr("src")
-				    });
-    $.ajax({
-	type: "POST",
-	url: "set-node.php?id=" + toID(id),
-	data: {state: dataToSend},
-	dataType: "json",
-	success: function(data) {
-	    if (data.error) alert(data.desc);
-	    //else alert("data send to server: " + dataToSend + " response: " + data.desc);
-	},
-	error: function(a, b, c) {
-	    alert("sending error: " + dataToSend);
-	    alert(b);
-	    alert(c);
-	}
-    });
+    return JSON.stringify({"top" : obj.offset().top,
+			   "left" : obj.offset().left,
+			   "width" : obj.width(),
+			   "height" : obj.height(),
+			   "url" : imageObj.attr("src")
+			  });
 };
 
-var deserializeImage = function(id) {
-    $.ajax({
-	dataType: "json",
-	url: "get-node.php?id=" + toID(id),
-	success: function(data) {
-	    if (data.error) alert(data.desc);
-	    else {
-		var state = $.parseJSON(data.state);
-		var obj = $(id);
-		obj.offset(state);
-		obj.width(state.width);
-		obj.height(state.height);
-		adjustImageAspectRatio(obj, $(id + "Image"), false, false);
-		$(id + "Image").attr("src", state.url);
-		//alert("loaded from server: " + JSON.stringify(data));
-		onNodeDeserialized();
-	    }
-	},
-	error: function(a, b, c) {
-	    alert(b);
-	    alert(c);
-	}
-    });
+var deserializeImage = function(id, data) {
+    if (!data.error) {
+	var state = $.parseJSON(data.state);
+	var obj = $(id);
+	obj.offset(state);
+	obj.width(state.width);
+	obj.height(state.height);
+	adjustImageAspectRatio(obj, $(id + "Image"), false, false);
+	$(id + "Image").attr("src", state.url);
+    }
 };
 
 var setupImage = function(id) {
     $(id).draggable({stop: function() {
-	serializeImage(id);
+	saveImage(id);
     }}).resizable({stop: function() {
-	serializeImage(id);
+	saveImage(id);
     }}).mouseenter(function(e) {
 	showSettingsTimeout = setTimeout(function() {
 	    $(id + "Settings").show("blind");
@@ -178,6 +147,8 @@ var setupImage = function(id) {
 	    clearTimeout(showSettingsTimeout);
 	    showSettingsTimeout = null;
 	}
+
+
 	$(id + "Settings").hide("blind");
     });
 

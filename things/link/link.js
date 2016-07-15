@@ -1,57 +1,30 @@
 var serializeLink = function(id) {
     var obj = $(id);
-    var dataToSend = JSON.stringify({
-        "top" : obj.offset().top,
+    return JSON.stringify({
+	"top" : obj.offset().top,
 	"left" : obj.offset().left,
-        "id" : toID($(id + "Link").attr("href")),
-        "desc": $(id + "Link").html()
-    });
-    $.ajax({
-	type: "POST",
-	url: "set-node.php?id=" + toID(id),
-	data: {state: dataToSend},
-	dataType: "json",
-	success: function(data) {
-            if (data.error) alert(data.desc);
-	    //else alert("data send to server: " + dataToSend + " response: " + data.desc);
-	},
-	error: function(a, b, c) {
-	    alert("sending error: " + dataToSend);
-	    alert(b);
-	    alert(c);
-	}
+	"id" : toID($(id + "Link").attr("href")),
+	"desc": $(id + "Link").html()
     });
 };
 
-var deserializeLink = function(id) {
-    $.ajax({
-	dataType: "json",
-	url: "get-node.php?id=" + toID(id),
-	success: function(data) {
-            if (data.error) alert(data.desc);
-            else {
-		var json = $.parseJSON(data.state);
-	        $(id).offset(json);
-	        var link = $(id + "Link");
-		link.attr("href", "index.php?id=" + json.id);
-		link.html(json.desc);
-		onNodeDeserialized();
-            }
-	},
-	error: function(a, b, c) {
-	    alert(b);
-	    alert(c);
-	}
-    });
+var deserializeLink = function(id, data) {
+    if (!data.error) {
+	var json = $.parseJSON(data.state);
+	$(id).offset(json);
+	var link = $(id + "Link");
+	link.attr("href", "index.php?id=" + json.id);
+	link.html(json.desc);
+    }
 };
 
 var showSettingsTimeout = null;
 
 var setupLink = function(id) {
     $(id).draggable({
-        stop: function() {
-	    serializeLink(id);
-        }
+	stop: function() {
+	    saveLink(id);
+	}
     }).mouseenter(function(e) {
 	showSettingsTimeout = setTimeout(function() {
 	    $(id + "Settings").show("blind");
@@ -83,7 +56,7 @@ var processLink = function(id, desc) {
 		var link = $("#" + id + "Link");
 		link.attr('href', "index.php?id=" + data.id);
 		link.html(desc);
-		serializeLink("#" + id);
+		saveLink("#" + id);
 	    }
 	},
 	error: function(a, b, c) {
@@ -100,13 +73,13 @@ dialog = $("#link-setup-dialog").dialog({
     width: 300,
     modal: true,
     buttons: {
-        "Set Link": function () { processLink($(this).data("id"), $("#new-page-title").val()); },
-        Cancel: function() {
-            dialog.dialog( "close" );
-        }
+	"Set Link": function () { processLink($(this).data("id"), $("#new-page-title").val()); },
+	Cancel: function() {
+	    dialog.dialog( "close" );
+	}
     },
     close: function() {
-        form[ 0 ].reset();
+	form[ 0 ].reset();
     }
 });
 
