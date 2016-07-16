@@ -168,9 +168,13 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
    $(function() {
        var toID = function(selector) {
 	   return selector.match(/(\d+)/)[1];
-       }
+       };
 
-       var genericSpawn = function(type, setupFunction, serializeFunction) {
+       var extractFileName = function(path) {
+	   return path.replace(/^.*[\\\/]/, '');
+       };
+
+       var genericSpawn = function(type, setupFunction, serializeFunction, deleteFunction) {
 	   $.ajax({
 	       dataType: "json",
 	       url: "create-node.php?type=" + type + "&page=" + <?php echo $pageID; ?>,
@@ -180,6 +184,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 		       $(document.body).append(data.html);
 		       setupFunction("#" + data.id);
 		       serializeFunction("#" + data.id);
+		       $("#" + data.id).data("deleteFunction", function() { deleteFunction("#" + data.id); });
 		   }
 		   else {
 		       alert("error creating node: " + data.desc);
@@ -190,7 +195,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 		   alert(c);
 	       }
 	   });
-       }
+       };
 
        var genericRemove = function(id, domID) {
 	   $.ajax({
@@ -212,13 +217,16 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 	   });
        };
 
-       var genericLoad = function(id, deserializeFunction) {
+       var genericLoad = function(id, deserializeFunction, deleteFunction) {
 	   $.ajax({
 	       dataType: "json",
 	       url: "get-node.php?id=" + toID(id),
 	       success: function(data) {
 		   if (data.error) alert(data.desc);
-		   else onNodeDeserialized();
+		   else {
+		       onNodeDeserialized();
+		       $(id).data("deleteFunction", deleteFunction);
+		   }
 		   deserializeFunction(data);
 	       },
 	       error: function(a, b, c) {
@@ -253,7 +261,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 	   echo 'var save'.$thing['name_id'].' = function(id) { genericSave(id, serialize'.$thing['name_id'].'); };';
 	   // TODO: load
 	   echo 'var spawn'.$thing['name_id'].' = function() { genericSpawn("'.
-		$thing['name_id'].'", setup'.$thing['name_id'].', save'.$thing['name_id'].'); };';
+		$thing['name_id'].'", setup'.$thing['name_id'].', save'.$thing['name_id'].', delete'.$thing['name_id'].'); };';
 	   echo '$("#btnCreate'.$thing['name_id'].'").button().click(spawn'.$thing['name_id'].');';
        }
        ?>
@@ -275,12 +283,13 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 	   $myThing = $things[$node['id_things']];
 	   $id = '"#'.$myThing['name_id'].$node['id'].'"';
 	   echo 'setup'.$myThing['name_id'].'('.$id.');';
-	   echo 'genericLoad('.$id.', function(data) { deserialize'.$myThing['name_id'].'('.$id.', data); });';
+	   echo 'genericLoad('.$id.', function(data) { deserialize'.$myThing['name_id'].'('.$id.', data); }, function() { delete'.$myThing['name_id'].'('.$id.')} );';
        }
        ?>
 
        $("#trashCan").droppable({
 	   drop: function(event, ui) {
+	       ui.draggable.data("deleteFunction")();
 	       genericRemove(toID(ui.draggable.attr("id")), ui.draggable.attr("id"));
 	   },
 	   hoverClass: "thrash-hover",
@@ -332,13 +341,11 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <?php
 $db->close();
 
-// TODO: file thing
-// TODO: lightbox for images?
-// TODO: removing: onDelete
-// TODO: code box language bug
+// TODO: some backup mechanism
+// TODO: admin panel
 
 // not important
-// TODO: admin panel
 // TODO: mod_rewrite
+// TODO: lightbox for images?
 
 ?>
