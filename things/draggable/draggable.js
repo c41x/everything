@@ -13,6 +13,9 @@ var deserializeDraggable = function(id, data) {
     }
 };
 
+var deleteDraggable = function(id) {
+}
+
 var setupDraggable = function(id) {
     // main JS logic on id - initialize all
     $(id).draggable({

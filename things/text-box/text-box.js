@@ -20,6 +20,9 @@ var deserializeTextBox = function(id, data) {
     loadedItems++;
 };
 
+var deleteTextBox = function(id) {
+}
+
 var setupTextBox = function(id) {
     // main JS logic on id - initialize all
     $(id).draggable({

@@ -23,6 +23,9 @@ var deserializeCodeBox = function(id, data) {
     }
 };
 
+var deleteCodeBox = function(id) {
+}
+
 var setupCodeBox = function(id) {
     $(id).draggable({
 	stop: function() {

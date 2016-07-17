@@ -18,6 +18,9 @@ var deserializeLink = function(id, data) {
     }
 };
 
+var deleteLink = function(id) {
+}
+
 var showSettingsTimeout = null;
 
 var setupLink = function(id) {

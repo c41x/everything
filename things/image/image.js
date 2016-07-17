@@ -133,6 +133,25 @@ var deserializeImage = function(id, data) {
     }
 };
 
+var deleteImage = function(id) {
+    var dataToSend = extractFileName($(id + "Image").attr("src"));
+    $.ajax({
+	dataType: "json",
+	type: "POST",
+	url: "delete-resource.php",
+	data: {id: dataToSend},
+	success: function(data) {
+	    if (data.error) {
+		alert("error deleting resource: " + data.desc);
+	    }
+	},
+	error: function(a, b, c) {
+	    alert(b);
+	    alert(c);
+	}
+    });
+}
+
 var setupImage = function(id) {
     $(id).draggable({stop: function() {
 	saveImage(id);
