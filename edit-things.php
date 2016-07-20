@@ -85,13 +85,16 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
     <div class="table">
       <div class="row header blue">
 	<div class="cell">
-          ID
+	  ID
 	</div>
 	<div class="cell">
-          Name
+	  Name
 	</div>
 	<div class="cell">
-          Edit
+	  Edit
+	</div>
+	<div class="cell">
+	  Delete
 	</div>
       </div>
 
@@ -100,7 +103,8 @@ if ($thingsResult !== FALSE && $thingsResult->num_rows > 0) {
 	  echo '<div class="row">'.
 	       '<div class="cell">'.$thing['name_id'].'</div>'.
 	       '<div class="cell">'.$thing['pretty_name'].'</div>'.
-	       '<div class="cell"><a href="edit-thing.php?id='.$thing['id'].'">Edit</a></div></div>';
+	       '<div class="cell"><a href="edit-thing.php?id='.$thing['id'].'">Edit</a></div>'.
+	       '<div class="cell"><a href="delete-thing.php?id='.$thing['id'].'">Delete</a></div></div>';
       }
       ?>
 
