@@ -49,7 +49,15 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-<title>Everything - <?php echo $page['title']; ?></title>
+  <title>Everything - <?php echo $page['title']; ?></title>
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="/favicon-192.png">
+  <link rel="icon" type="image/png" sizes="160x160" href="/favicon-160.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 
 <style>
  body {
@@ -342,7 +350,7 @@ if ($nodesResult !== FALSE && $nodesResult->num_rows > 0) {
 $db->close();
 
 // TODO: some backup mechanism
-// TODO: admin panel
+// TODO: deleting pages
 
 // not important
 // TODO: mod_rewrite
